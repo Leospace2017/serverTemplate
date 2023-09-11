@@ -8,7 +8,6 @@ const dbConnection = async () => {
         await mongoose.connect(connectionString)
     } catch (error) {
         console.log(error)
-
     }
 }
 

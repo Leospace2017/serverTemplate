@@ -8,8 +8,8 @@ import { errorHandler } from "./helper/errorHandler.js";
 import mongoose from "mongoose";
 import dbConnection from "./config/dbConnection.js";
 import { logRecords, logger } from "./helper/logger.js";
-import userRoute from "./routes/routes.user.js"
-
+import userRoutes from "./routes/routes.user.js"
+import noteRoutes from "./routes/routes.note.js"
 
 const port = process.env.PORT || 3500; 
 
@@ -24,10 +24,12 @@ app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(cookieParser())
 app.use(logger)
+app.disable("x-powered-by")
 
 // app.use("/", express.static(path.join(__dirname,'build')))
 
-app.use("/api/user/", userRoute)
+app.use("/api/user", userRoutes)
+app.use("/api/note", noteRoutes)
 
 app.use(errorHandler)
 
