@@ -6,7 +6,7 @@ import * as UserController from "../controllers/controller.user.js"
 
 const router = express.Router();
 
-router.post("/createUser",UserController.createUser)
+router.post("/createUser",UserController.createUser) 
     .get("/", UserController.findAllUsers)
     .get("/:id",UserController.findOneUser)
     .patch("/updateUserById/:id",UserController.updateUserById)

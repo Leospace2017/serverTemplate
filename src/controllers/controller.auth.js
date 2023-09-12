@@ -1,7 +1,7 @@
 import { validateInput } from "../helper/utils/validateInput.js";
 import { User, loginFormSchema } from "../models/model.user.js";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken"
+import jwt from "jsonwebtoken";
 
 export const login = async (req, res) => {
   validateInput(loginFormSchema, req.body);
@@ -24,13 +24,13 @@ export const login = async (req, res) => {
       },
     },
     process.env.ACCESS_TOKEN_SECRET,
-    { expiresIn: "60000" }
+    { expiresIn: "2m" }
   );
 
   const refreshToken = jwt.sign(
     { username: foundUser.email },
     process.env.REFRESH_TOKEN_SECRET,
-    { expiresIn: "30000" }
+    { expiresIn: "1m" }
   );
 
   // Create secure cookie with refresh token
@@ -45,41 +45,42 @@ export const login = async (req, res) => {
   res.status(200).json({ accessToken });
 };
 
-export const register = async (req, res) => {};
 
 export const refresh = async (req, res) => {
+  const cookies = req.cookies;
+    console.log(cookies.jwt)
+  if (!cookies.jwt) return res.status(401).json({ message: "Json Web Token not found" });
 
-    const cookies = req.cookies
+  const refreshToken = cookies.jwt;
 
-    if (!cookies?.jwt) return res.status(401).json({ message: 'Unauthorized' })
+  jwt.verify(
+    refreshToken,
+    process.env.REFRESH_TOKEN_SECRET,
+    async (err, decoded) => {
+      if (err) return res.status(403).json({ message: "Forbidden" });
+        console.log(err)
+      const foundUser = await User.findOne({ email: decoded.username });
 
-    const refreshToken = cookies.jwt
+      if (!foundUser) return res.status(401).json({ message: "Unauthorized" });
 
-    jwt.verify(
-        refreshToken,
-        process.env.REFRESH_TOKEN_SECRET,
-        async (err, decoded) => {
-            if (err) return res.status(403).json({ message: 'Forbidden' })
+      const accessToken = jwt.sign(
+        {
+          UserInfo: {
+            username: foundUser.email,
+          },
+        },
+        process.env.ACCESS_TOKEN_SECRET,
+        { expiresIn: "1m" }
+      );
 
-            const foundUser = await User.findOne({ email: decoded.email })
-
-            if (!foundUser) return res.status(401).json({ message: 'Unauthorized' })
-
-            const accessToken = jwt.sign(
-                {
-                    "UserInfo": {
-                        "username": foundUser.email,
-                    }
-                },
-                process.env.ACCESS_TOKEN_SECRET,
-                { expiresIn: '15m' }
-            )
-
-            res.json({ accessToken })
-        }
-    )
-
-
+      res.json({ accessToken });
+    }
+  );
 };
 
-export const logout = async (req, res) => {};
+export const logout = async (req, res) => {
+    const cookies = req.cookies
+    if (!cookies.jwt) return res.sendStatus(204) //No content
+    res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true })
+    res.json({ message: 'Cookie cleared' })
+};

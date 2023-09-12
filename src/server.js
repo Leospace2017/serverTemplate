@@ -9,6 +9,7 @@ import { logRecords, logger } from "./helper/middleware/logger.js";
 import userRoutes from "./routes/routes.user.js";
 import noteRoutes from "./routes/routes.note.js";
 import authRoutes from "./routes/routes.auth.js"
+import cookieParser from "cookie-parser"
 import session from "express-session"
 
 
@@ -24,6 +25,7 @@ app.use(cors(corsOptions))
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(logger)
+app.use(cookieParser())
 app.disable("x-powered-by")
 
 // app.use(session({
