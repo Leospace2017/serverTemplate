@@ -1,29 +1,12 @@
+import { validateInput } from "../helper/utils/validateInput.js";
 import { Note, noteFormSchema } from "../models/model.note.js";
 
 export const createNote = async (req, res, next) => {
-  let noteCreateError = {};
 
 
+  validateInput(noteFormSchema,req.body)
   try {
     const {noteContent} = req.body;
-
-    const result = noteFormSchema.safeParse(req.body);
-
-    if (!result.success) {
-      result.error.issues.forEach(
-        (issue) =>
-          (noteCreateError = {
-            ...noteCreateError,
-            [issue.path[0]]: issue.message,
-          })
-      );
-      const message =
-        Object.keys(noteCreateError).length > 0
-          ? { errors: noteCreateError }
-          : { success: true };
-
-      return res.status(409).json({ message: message });
-    }
 
     const note = await Note.create({
         note: noteContent,
@@ -38,3 +21,17 @@ export const createNote = async (req, res, next) => {
     res.status(500).json({message:err.message})
   }
 };
+
+
+export const getNotes = async (req, res, next) => {
+   try {
+    const notes = await Note.find();
+
+    if(!notes) return res.json({message: "no notes or not found"})
+
+    res.status(200).json({message: notes})
+   } catch (error) {
+    console.log(error)
+    next(error)
+   }
+}

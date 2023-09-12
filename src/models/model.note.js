@@ -13,7 +13,7 @@ const noteSchema = new mongoose.Schema({
         ref: "notes",
         require: true
     }
-})
+},{timestamps:true})
 
 
 const Note = mongoose.model("Note", noteSchema, "NoteModel")

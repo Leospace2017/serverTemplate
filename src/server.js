@@ -1,15 +1,16 @@
-import express from "express"
-import "dotenv/config"
-import cors from "cors"
+import express from "express";
+import "dotenv/config";
+import cors from "cors";
 import {corsOptions} from "./config/corsOption.js";
-import cookieParser from "cookie-parser"
-import path from "path"
-import { errorHandler } from "./helper/errorHandler.js";
+import { errorHandler } from "./helper/middleware/errorHandler.js";
 import mongoose from "mongoose";
 import dbConnection from "./config/dbConnection.js";
-import { logRecords, logger } from "./helper/logger.js";
-import userRoutes from "./routes/routes.user.js"
-import noteRoutes from "./routes/routes.note.js"
+import { logRecords, logger } from "./helper/middleware/logger.js";
+import userRoutes from "./routes/routes.user.js";
+import noteRoutes from "./routes/routes.note.js";
+import authRoutes from "./routes/routes.auth.js"
+import session from "express-session"
+
 
 const port = process.env.PORT || 3500; 
 
@@ -22,12 +23,15 @@ dbConnection();
 app.use(cors(corsOptions))
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
-app.use(cookieParser())
 app.use(logger)
 app.disable("x-powered-by")
 
-// app.use("/", express.static(path.join(__dirname,'build')))
+// app.use(session({
+//     secret:
+// }))
 
+// app.use("/", express.static(path.join(__dirname,'build')))
+app.use("/api/auth", authRoutes)
 app.use("/api/user", userRoutes)
 app.use("/api/note", noteRoutes)
 

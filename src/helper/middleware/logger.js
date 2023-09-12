@@ -3,7 +3,7 @@ import { v4 as uuid } from "uuid";
 import fs from "fs";
 import * as fsPromises from "fs/promises";
 import path from "path";
-import { __dirname } from "../esm.js";
+import { __dirname } from "../../esm.js";
 
 
 

@@ -1,5 +1,5 @@
 import rateLimit from 'express-rate-limit'
-import {logRecords}  from './logger.js'
+import {logRecords}  from '../helper/middleware/logger.js'
 
 export const loginLimiter = rateLimit({
     windowMs: 60 * 1000, // 1 minute

@@ -1,28 +1,15 @@
 import {User, registerFormSchema} from "../models/model.user.js";
 import bcrypt from "bcrypt";
-import z from "zod";
+import { validateInput } from "../helper/utils/validateInput.js";
 
 
 
 export const createUser = async (req, res, next) => {
-  let userCreateError = {};
   try {
     const { fullName, email, password } = req.body;
 
-    const result = registerFormSchema.safeParse(req.body);
+    validateInput(registerFormSchema,req.body);
 
-    if (!result.success) {
-      result.error.issues.forEach(
-        (issue) => (userCreateError = { ...userCreateError, [issue.path[0]]: issue.message })
-      );
-      const message =
-        Object.keys(userCreateError).length > 0
-          ? { errors: userCreateError }
-          : { success: true };
-
-          return res.status(409).json({ message: message });
-
-    }
 
     if (!email || !password)
       return res.json({ message: "email and password are required!" });
@@ -81,23 +68,8 @@ export const findOneUser = async (req, res) => {
 export const updateUserById = async (req, res) => {
   const { id } = req.params;
   const { fullName, email, password } = req.body;
-  let userUpdateError = {};
 
-
-  const result = registerFormSchema.safeParse(req.body);
-
-  if (!result.success) {
-    result.error.issues.forEach(
-      (issue) => (userUpdateError = { ...userUpdateError, [issue.path[0]]: issue.message })
-    );
-    const message =
-      Object.keys(userUpdateError).length > 0
-        ? { errors: userUpdateError }
-        : { success: true };
-    return res.status(409).json({ message: message });
-  }
-  // if (!fullName || !email)
-  //   return res.json({ message: "fullName and email are required" });
+  validateInput(registerFormSchema,req.body);
 
   try {
     const user = await User.findById(id);
