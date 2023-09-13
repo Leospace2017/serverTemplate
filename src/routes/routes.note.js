@@ -4,10 +4,11 @@ import { verifyJWT } from "../helper/middleware/verifyJWT.js";
 
 const router = express.Router();
 
-// router.use(verifyJWT)
+router.use(verifyJWT);
 
 router.post("/createNote", noteController.createNote)
-    .get("/",verifyJWT, noteController.getNotes)
+    .delete("/deleteNotes", noteController.deleteAllNotes)
+    .get("/", noteController.getNotes)
 
 
 

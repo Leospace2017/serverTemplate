@@ -56,7 +56,7 @@ export const findAllUsers = async (req, res, next) => {
 export const findOneUser = async (req, res) => {
   const { id } = req.params;
   try {
-    const user = await User.findById(id).populate("notes");
+    const user = await User.findById(id).select("-password").populate("notes");
     if (user) return res.status(200).json(user);
     res.json({ message: "not found" });
   } catch (error) {
