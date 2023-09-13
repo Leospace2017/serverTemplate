@@ -1,6 +1,7 @@
+import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 
-export const verifyJWT = async (req, res, next) => {
+export const verifyJWT = async (req:Request, res: Response, next:NextFunction) => {
   const token = req.cookies.accessJwt;
 
   // const authHeader = req.headers["authorization"];
@@ -17,7 +18,7 @@ export const verifyJWT = async (req, res, next) => {
   console.log(token);
 
 
-    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    const {decoded }: any  = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
 
     if (decoded) {
       req.email = decoded.UserInfo.email;

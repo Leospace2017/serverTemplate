@@ -1,10 +1,12 @@
+import { CookieOptions, Request, Response } from "express";
 import { validateInput } from "../helper/utils/validateInput.js";
 import { User, loginFormSchema } from "../models/userModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { UserInfo } from "../types.js";
 
-export const login = async (req, res) => {
-  validateInput(loginFormSchema, req.body);
+export const login = async (req:Request, res:Response) => {
+  validateInput(loginFormSchema, req.body,res);
 
   const { email, password } = req.body;
   const foundUser = await User.findOne({ email: email });
@@ -17,7 +19,7 @@ export const login = async (req, res) => {
   if (!validPassword) {
     return res.status(401).json({ message: "Invalid Password" });
   }
-  const updatedUser = await User.findOneAndUpdate(
+  const updatedUser:User  = await User.findOneAndUpdate(
     { email: email },
     { $set: { role: "admin" } }
   );
@@ -25,21 +27,23 @@ export const login = async (req, res) => {
   const accessToken = jwt.sign(
     {
       UserInfo: {
-        email: updatedUser.email,
-        role: updatedUser.role,
+        email: updatedUser?.email,
+        role: updatedUser?.role,
       },
     },
     process.env.ACCESS_TOKEN_SECRET,
     { expiresIn: "30000" }
   );
 
+  const cookieOptions: CookieOptions = {
+    httpOnly: true,
+    secure: false, // In einer Produktionsumgebung auf "true" verwenden, wenn Ihre Anwendung HTTPS verwendet.
+    sameSite: "none", // Setzen Sie es auf "None", um das Cookie von Drittanbieter-Websites zu senden. strict or lax
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  };
+
   return res
-    .cookie("accessJwt", accessToken, {
-      httpOnly: true,
-      secure: false,
-      sameSite: "None",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    })
+    .cookie("accessJwt", accessToken, cookieOptions)
     .status(200)
     .json({ message: "success logging in" });
   // const refreshToken = jwt.sign(
@@ -64,7 +68,7 @@ export const login = async (req, res) => {
   // Send accessToken containing username and roles
 };
 
-export const refresh = async (req, res) => {
+export const refresh = async (req:Request, res:Response) => {
   const cookies = req.cookies;
   console.log(cookies.jwt);
   if (!cookies.jwt)
@@ -75,7 +79,7 @@ export const refresh = async (req, res) => {
   jwt.verify(
     refreshToken,
     process.env.REFRESH_TOKEN_SECRET,
-    async (err, decoded) => {
+    async (err:any, decoded:any) => {
       if (err) return res.status(403).json({ message: "Forbidden" });
       console.log(err);
       const foundUser = await User.findOne({ email: decoded.UserInfo.email });
@@ -98,7 +102,7 @@ export const refresh = async (req, res) => {
   );
 };
 
-export const logout = async (req, res) => {
+export const logout = async (req:Request, res:Response) => {
   const { email } = req;
 
   if (!email) return res.sendStatus(204); //No content
@@ -112,7 +116,7 @@ export const logout = async (req, res) => {
    return res
     .clearCookie("accessJwt", {
       httpOnly: true,
-      sameSite: "None",
+      sameSite: "none",
       secure: true,
     })
     .status(200)

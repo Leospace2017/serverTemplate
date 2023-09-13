@@ -2,12 +2,20 @@ import mongoose from "mongoose";
 import z from "zod";
 
 const registerFormSchema = z.object({
-  fullName: z.string().min(2).max(15, { message: "fullname required" }),
-  email: z.string().email({ message: "email required" }),
-  password: z
-    .string({ message: "message required" })
-    .min(8, { message: "password has a minlength of 8" }),
+  fullName: z.string().min(2).max(15).refine(value => {
+    if (!value) throw { message: "fullname required" };
+    return true;
+  }),
+  email: z.string().email().refine(value => {
+    if (!value) throw { message: "email required" };
+    return true;
+  }),
+  password: z.string().min(8).refine(value => {
+    if (!value) throw { message: "password required" };
+    return true;
+  }),
 });
+
 
 const loginFormSchema = z.object({
   email: z.string().email({message: "email required"}),
@@ -52,4 +60,18 @@ userSchema.virtual("notes", {
 
 const User = mongoose.model("User", userSchema, "UserModel");
 
-export { User, registerFormSchema, loginFormSchema };
+
+const userZodSchema = z.object({
+  userName: z.string().optional(),
+  email: z.string().email(),
+  role: z.enum(["guest", "admin"]).default("guest"),
+  password: z.string(),
+}).nullish();
+
+// userZodSchema.extend({
+//   notes: z.unknown(), // Zod hat keine built-in Methode zur Darstellung von virtual properties, daher verwenden wir 'z.unknown()'.
+// });
+
+export type User = z.infer<typeof userZodSchema>;
+
+export { User, registerFormSchema, loginFormSchema};

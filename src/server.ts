@@ -2,15 +2,15 @@ import express from "express";
 import "dotenv/config";
 import cors from "cors";
 import {corsOptions} from "./config/corsOption.js";
-import { errorHandler } from "./helper/middleware/errorHandler.js";
+import { errorHandler } from "./helper/middleware/errorHandler.ts";
 import mongoose from "mongoose";
-import dbConnection from "./config/dbConnection.js";
-import { logRecords, logger } from "./helper/middleware/logger.js";
+import dbConnection from "./config/dbConnection.ts";
+import { logRecords, logger } from "./helper/middleware/logger.ts";
 import userRoutes from "./routes/userRoutes.js";
 import noteRoutes from "./routes/noteRoutes.js";
-import authRoutes from "./routes/authRoutes.js"
+import authRoutes from "./routes/authRoutes.ts"
 import cookieParser from "cookie-parser"
-import session from "express-session"
+// import session from "express-session"
 
 
 const port = process.env.PORT || 3500; 
@@ -42,7 +42,7 @@ app.use(errorHandler)
 
 mongoose.connection.once("open", () => {
     console.log("DB connected")
-    app.listen(port, console.log(`Server started at port ${port}`))
+    app.listen(port, () => console.log(`Server started at port ${port}`))
 })
 
 mongoose.connection.on("error", err => {
