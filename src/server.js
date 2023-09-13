@@ -6,9 +6,9 @@ import { errorHandler } from "./helper/middleware/errorHandler.js";
 import mongoose from "mongoose";
 import dbConnection from "./config/dbConnection.js";
 import { logRecords, logger } from "./helper/middleware/logger.js";
-import userRoutes from "./routes/routes.user.js";
-import noteRoutes from "./routes/routes.note.js";
-import authRoutes from "./routes/routes.auth.js"
+import userRoutes from "./routes/userRoutes.js";
+import noteRoutes from "./routes/noteRoutes.js";
+import authRoutes from "./routes/authRoutes.js"
 import cookieParser from "cookie-parser"
 import session from "express-session"
 

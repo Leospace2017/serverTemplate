@@ -1,5 +1,5 @@
 import { validateInput } from "../helper/utils/validateInput.js";
-import { Note, noteFormSchema } from "../models/model.note.js";
+import { Note, noteFormSchema } from "../models/noteModel.js";
 
 export const createNote = async (req, res, next) => {
   validateInput(noteFormSchema, req.body);
@@ -19,24 +19,22 @@ export const createNote = async (req, res, next) => {
 };
 
 export const getNotes = async (req, res, next) => {
-  const { role } = req;
-
+  const { role } = await req;
   console.log(role);
 
-  if (role === "admin") {
-    try {
+  try {
+    if (role === "admin" && role) {
       const notes = await Note.find();
 
       if (!notes) return res.json({ message: "notes not found" });
 
       res.status(200).json({ message: notes });
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({message:"server Error"})
+    } else {
+      res.status(500).json({ message: "not admin" });
     }
-  }
-  else{
-    res.status(500).json({message:"not admin"})
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "server Error" });
   }
 };
 

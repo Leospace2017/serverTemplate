@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-export const verifyJWT = (req, res, next) => {
+export const verifyJWT = async (req, res, next) => {
   const token = req.cookies.accessJwt;
 
   // const authHeader = req.headers["authorization"];
@@ -12,24 +12,24 @@ export const verifyJWT = (req, res, next) => {
   // const token = authHeader && authHeader.split(" ")[1];
 
   if (!token) {
-    return res.sendStatus(403);
+    return res.status(403).json({message: "dont have token"});
   }
   console.log(token);
 
-  try {
-    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-    console.log("hi" ,decoded);
 
-    if (!decoded) {
+    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+
+    if (decoded) {
+      req.email = decoded.UserInfo.email;
+      req.role = decoded.UserInfo.role;
+  
+      next();
+    }else{
+      
       return res.status(403).json({ message: "Forbidden" });
     }
+    
 
-    req.email = decoded.UserInfo.email;
-    req.role = decoded.UserInfo.role;
 
-    next();
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: error.message });
-  }
+  
 };

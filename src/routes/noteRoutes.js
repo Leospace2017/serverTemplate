@@ -1,5 +1,5 @@
 import express from "express"
-import * as noteController from "../controllers/controller.note.js"
+import * as noteController from "../controllers/noteController.js"
 import { verifyJWT } from "../helper/middleware/verifyJWT.js";
 
 const router = express.Router();

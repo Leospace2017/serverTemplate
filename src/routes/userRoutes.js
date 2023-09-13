@@ -1,6 +1,6 @@
 import express from "express";
 import { verifyJWT } from "../helper/middleware/verifyJWT.js";
-import * as UserController from "../controllers/controller.user.js"
+import * as UserController from "../controllers/userController.js"
 
 
 

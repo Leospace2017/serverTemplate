@@ -1,5 +1,5 @@
 import { validateInput } from "../helper/utils/validateInput.js";
-import { User, loginFormSchema } from "../models/model.user.js";
+import { User, loginFormSchema } from "../models/userModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 

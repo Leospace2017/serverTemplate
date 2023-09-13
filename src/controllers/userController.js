@@ -1,4 +1,4 @@
-import {User, registerFormSchema} from "../models/model.user.js";
+import {User, registerFormSchema} from "../models/userModel.js";
 import bcrypt from "bcrypt";
 import { validateInput } from "../helper/utils/validateInput.js";
 

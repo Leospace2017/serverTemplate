@@ -1,5 +1,5 @@
 import express from "express";
-import * as authController from "../controllers/controller.auth.js";
+import * as authController from "../controllers/authController.js";
 import { loginLimiter } from "../config/loginLimiter.js";
 import { verifyJWT } from "../helper/middleware/verifyJWT.js";
 
