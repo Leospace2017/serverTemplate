@@ -1,5 +1,5 @@
 import express from "express";
-import "dotenv/config";
+import dotenv from "dotenv";
 import cors from "cors";
 import {corsOptions} from "./config/corsOption.js";
 import { errorHandler } from "./helper/middleware/errorHandler.ts";
@@ -11,7 +11,7 @@ import noteRoutes from "./routes/noteRoutes.js";
 import authRoutes from "./routes/authRoutes.ts"
 import cookieParser from "cookie-parser"
 // import session from "express-session"
-
+dotenv.config();
 
 const port = process.env.PORT || 3500; 
 
