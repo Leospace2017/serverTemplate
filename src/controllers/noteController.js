@@ -1,5 +1,6 @@
 import { validateInput } from "../helper/utils/validateInput.js";
 import { Note, noteFormSchema } from "../models/noteModel.js";
+import { User } from "../models/userModel.js";
 
 export const createNote = async (req, res, next) => {
   validateInput(noteFormSchema, req.body);
@@ -19,11 +20,13 @@ export const createNote = async (req, res, next) => {
 };
 
 export const getNotes = async (req, res, next) => {
-  const { role } = await req;
-  console.log(role);
+  const { email } = await req;
+  // console.log(role);
+
+ const user =  await User.findOne({email:email})
 
   try {
-    if (role === "admin" && role) {
+    if (user.role === "admin" ) {
       const notes = await Note.find();
 
       if (!notes) return res.json({ message: "notes not found" });

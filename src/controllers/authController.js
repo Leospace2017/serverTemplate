@@ -30,7 +30,7 @@ export const login = async (req, res) => {
       },
     },
     process.env.ACCESS_TOKEN_SECRET,
-    { expiresIn: "30000" }
+    { expiresIn: "600000" }
   );
 
   return res
