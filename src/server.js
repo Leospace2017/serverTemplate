@@ -10,7 +10,6 @@ import userRoutes from "./routes/userRoutes.js";
 import noteRoutes from "./routes/noteRoutes.js";
 import authRoutes from "./routes/authRoutes.js"
 import cookieParser from "cookie-parser"
-import session from "express-session"
 
 
 const port = process.env.PORT || 3500; 
