@@ -20,13 +20,13 @@ export const createNote = async (req, res, next) => {
 };
 
 export const getNotes = async (req, res, next) => {
-  const { email } = await req;
+  const { role } = await req;
   // console.log(role);
 
- const user =  await User.findOne({email:email})
+//  const user =  await User.findOne({email:email})
 
   try {
-    if (user.role === "admin" ) {
+    if (role === "admin" ) {
       const notes = await Note.find();
 
       if (!notes) return res.json({ message: "notes not found" });

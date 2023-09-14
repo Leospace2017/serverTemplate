@@ -22,6 +22,7 @@ export const login = async (req, res) => {
     { $set: { role: "admin" } }
   );
 
+  console.log(updatedUser)
   const accessToken = jwt.sign(
     {
       UserInfo: {
@@ -32,7 +33,6 @@ export const login = async (req, res) => {
     process.env.ACCESS_TOKEN_SECRET,
     { expiresIn: "600000" }
   );
-
   return res
     .cookie("accessJwt", accessToken, {
       httpOnly: true,
@@ -102,11 +102,11 @@ export const logout = async (req, res) => {
   const { email } = req;
 
   if (!email) return res.sendStatus(204); //No content
-  const updatedUser = await User.findOneAndUpdate({ email: email }, { $set: { role: "guest" } });
+  // const updatedUser = await User.findOneAndUpdate({ email: email }, { $set: { role: "guest" } });
   
-  if(!updatedUser){
-    return res.status(401).json({message: updatedUser})
-  }
+  // if(!updatedUser){
+  //   return res.status(401).json({message: updatedUser})
+  // }
 
 
    return res

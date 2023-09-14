@@ -18,6 +18,8 @@ export const verifyJWT = async (req, res, next) => {
 
 
     const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+  console.log(decoded)
+    console.log(decoded)
     if (decoded) {
       req.email = decoded.UserInfo.email;
       req.role = decoded.UserInfo.role;
@@ -27,8 +29,5 @@ export const verifyJWT = async (req, res, next) => {
       
       return res.status(403).json({ message: "Forbidden" });
     }
-    
-
-
   
 };
