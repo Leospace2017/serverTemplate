@@ -1,4 +1,5 @@
-import { Request } from 'express';
+import { Request } from "express";
+import { JwtPayload } from "jsonwebtoken";
 
 interface UserInfo {
   email: string;
@@ -17,3 +18,5 @@ declare global {
 // Verwendung:
 const email = req.email;
 const role = req.role;
+
+

@@ -1,10 +1,10 @@
-import { Response } from "express";
+import { Request, Response } from "express";
 import z, { ZodSchema } from "zod";
 
 
-export const validateInput = (zodSchema :ZodSchema, body: any, res:Response) => {
+export const validateInput = (zodSchema :ZodSchema, req: Request, res:Response) => {
     let error = {};
-      const result = zodSchema.safeParse(body);
+      const result = zodSchema.safeParse(req);
   
       if (!result.success) {
         result.error.issues.forEach(
@@ -17,5 +17,7 @@ export const validateInput = (zodSchema :ZodSchema, body: any, res:Response) => 
   
             return res.status(409).json({ message: message });
       }
+
+      return true
       
 }

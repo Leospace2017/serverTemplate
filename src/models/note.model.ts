@@ -1,13 +1,13 @@
 import mongoose from "mongoose";
-import z from "zod";
+import {customAlphabet } from "nanoid"
 
-const noteFormSchema = z.object({
-    noteContent: z.string().max(500,{message:"maximum 5 characters"}).min(5,{message:"minimum 5 characters"})
-})
-
+const nanoid = customAlphabet("abcdefghijklmnopqrstuvwxyz0123456789", 10)
 
 const noteSchema = new mongoose.Schema({
-    note: { type: String, maxLength: 500, minLength: 5},
+    noteId: {type: String, required: true, unique: true, default: ()=> `note_${nanoid()}`},
+    title: {type: String, required: true},
+    note: { type: String, required: true},
+    image: {type: String},
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "notes",
@@ -18,4 +18,4 @@ const noteSchema = new mongoose.Schema({
 
 const Note = mongoose.model("Note", noteSchema, "NoteModel")
 
-export {Note, noteFormSchema}
+export {Note}

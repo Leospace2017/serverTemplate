@@ -1,14 +1,13 @@
 import express from "express";
 import * as authController from "../controllers/auth.controller";
 import { loginLimiter } from "../config/loginLimiter.js";
-import { verifyJWT } from "../helpers/middleware/verifyJWT";
+import { verify } from "../helpers/middleware/verify";
 
 const router = express.Router();
 
-router
-  .post("/login", authController.login) //or add with loginLimiter as middleware
+router  //register is at user.controller with createUser function
+  .post("/login", authController.login) //or add with loginLimiter as middleware 
   .get("/tokenRefresh", authController.refresh)
-  .post("/logout", verifyJWT, authController.logout);
-
+  .post("/logout", verify, authController.logout);
 
 export default router;

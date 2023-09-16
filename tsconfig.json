@@ -10,11 +10,12 @@
     "forceConsistentCasingInFileNames": true
   },
   "$schema": "https://json.schemastore.org/tsconfig",
-  "display": "Recommended"
+  "display": "Recommended",
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules"]
 }
 
 // {
-//   "extends": "@tsconfig/recommended/tsconfig.json";
 
 //     "compilerOptions": {
 //         /* Visit https://aka.ms/tsconfig.json to read more about this file */

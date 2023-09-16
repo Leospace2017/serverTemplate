@@ -1,5 +1,6 @@
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import "dotenv/config";
+import { VerifyJwtResult } from "../../models/schema/session.schema";
 
 export function generateRandom64BitString(input: string) {
   // Definieren Sie alle möglichen Zeichen im Hexadezimalformat (0-9, a-f)
@@ -28,11 +29,11 @@ export function signJwt(
   });
 }
 
-export function verifyJwt(token: string, keyName: string) {
+export function verifyJwt(token:string, keyName:string): VerifyJwtResult {
   const publicKey = keyName;
 
   try {
-    const decoded = jwt.verify(token, publicKey);
+    const decoded = jwt.verify(token, publicKey) as JwtPayload;
     return {
       valid: true,
       expired: false,

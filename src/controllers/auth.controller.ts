@@ -1,14 +1,15 @@
 import { Request, Response } from "express";
 import { validateInput } from "../helpers/utils/validateInput";
-import { User, cookieSchemaType, loginFormSchema } from "../models/user.model";
+import { User} from "../models/user.model";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import "dotenv/config"
-
+import "dotenv/config";
+import { cookieSchemaType } from "../models/schema/session.schema";
+import { loginFormSchema } from "../models/schema/user.schema";
 
 const secreteToken = process.env.ACCESS_TOKEN_SECRET || "";
-export const login = async (req:Request, res:Response) => {
-  validateInput(loginFormSchema, req.body,res);
+export const login = async (req: Request, res: Response) => {
+  validateInput(loginFormSchema, req.body, res);
 
   const { email, password } = req.body;
   const foundUser = await User.findOne({ email: email });
@@ -21,7 +22,7 @@ export const login = async (req:Request, res:Response) => {
   if (!validPassword) {
     return res.status(401).json({ message: "Invalid Password" });
   }
-  const updatedUser: cookieSchemaType= await User.findOneAndUpdate(
+  const updatedUser: cookieSchemaType = await User.findOneAndUpdate(
     { email: email },
     { $set: { role: "admin" } }
   );
@@ -68,7 +69,9 @@ export const login = async (req:Request, res:Response) => {
   // Send accessToken containing username and roles
 };
 
-export const refresh = async (req:Request, res:Response) => {
+
+
+export const refresh = async (req: Request, res: Response) => {
   const cookies = req.cookies;
   console.log(cookies.jwt);
   if (!cookies.jwt)
@@ -76,35 +79,34 @@ export const refresh = async (req:Request, res:Response) => {
 
   const refreshToken = cookies.jwt;
 
-//   jwt.verify(
-//     refreshToken,
-//     process.env.REFRESH_TOKEN_SECRET || "",
-//     async (err:any, decoded) => {
-//       if (err) return res.status(403).json({ message: "Forbidden" });
-//       console.log(err);
-//       const foundUser = await User.findOne({ email: decoded.UserInfo.email });
+  //   jwt.verify(
+  //     refreshToken,
+  //     process.env.REFRESH_TOKEN_SECRET || "",
+  //     async (err:any, decoded) => {
+  //       if (err) return res.status(403).json({ message: "Forbidden" });
+  //       console.log(err);
+  //       const foundUser = await User.findOne({ email: decoded.UserInfo.email });
 
-//       if (!foundUser) return res.status(401).json({ message: "Unauthorized" });
+  //       if (!foundUser) return res.status(401).json({ message: "Unauthorized" });
 
-//       const accessToken = jwt.sign(
-//         {
-//           UserInfo: {
-//             email: foundUser.email,
-//             role: foundUser.role,
-//           },
-//         },
-//         process.env.ACCESS_TOKEN_SECRET || "",
-//         { expiresIn: "1m" }
-//       );
+  //       const accessToken = jwt.sign(
+  //         {
+  //           UserInfo: {
+  //             email: foundUser.email,
+  //             role: foundUser.role,
+  //           },
+  //         },
+  //         process.env.ACCESS_TOKEN_SECRET || "",
+  //         { expiresIn: "1m" }
+  //       );
 
-//       res.json({ message: "jwt refreshed" });
-//     }
-//   );
+  //       res.json({ message: "jwt refreshed" });
+  //     }
+  //   );
 };
 
-export const logout = async (req:Request, res:Response) => {
-
-   return res
+export const logout = async (req: Request, res: Response) => {
+  return res
     .clearCookie("accessJwt", {
       httpOnly: true,
       sameSite: "none",
