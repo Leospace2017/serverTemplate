@@ -1,5 +1,4 @@
 import { User } from "../models/user.model";
-import bcrypt from "bcrypt";
 import { validateInput } from "../helpers/utils/validateInput";
 import { NextFunction, Request, Response } from "express";
 import { registerFormSchema, updateFormSchema } from "../models/schema/user.schema";

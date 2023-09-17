@@ -14,7 +14,7 @@ export const createSessionSchema = z.object({
   
 
 export const cookieSchema = z.object({
-    userName: z.string(),
+    name: z.string(),
     email: z.string().email(),
     role: z.enum([ "member" ,"admin"]).optional(),
     password: z.string(),

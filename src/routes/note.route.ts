@@ -1,10 +1,10 @@
 import express from "express";
 import * as noteController from "../controllers/note.controller";
-import { verify } from "../helpers/middleware/verify";
+import verifyAdmin from "../helpers/middleware/verifyAdmin";
 
 const router = express.Router();
 
-router.use(verify);
+router.use(verifyAdmin);
 
 router
   .post("/createNote", noteController.createNote)

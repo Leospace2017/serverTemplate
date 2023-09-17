@@ -2,6 +2,21 @@ import { Request, RequestParamHandler, Response } from "express";
 import { User } from "../models/user.model";
 import bcrypt from "bcrypt";
 
+
+export async function compareDBPassword(
+    email:string,
+    password:string,
+) {
+    const user = await User.findOne({ email });
+  
+    if (!user) {
+      return false;
+    }
+    const isValid = await bcrypt.compare(password,user.password)
+  
+    return isValid;
+  }
+  
 export const dbCreateUser = async (req: Request, res: Response) => {
   const { email, password } = req.body;
   if (!email || !password)
@@ -49,13 +64,13 @@ export const dbUpdateUser = async (
   res: Response,
   userIDParams: string
 ) => {
-  const { fullName, email, password } = req.body;
+  const { name, email, password } = req.body;
 
   const user = await User.findById(userIDParams);
 
   if (!user) return res.json({ message: "id not found" });
 
-  user.userName = fullName;
+  user.name = name;
   user.email = email;
 
   if (password) {
@@ -63,5 +78,5 @@ export const dbUpdateUser = async (
   }
 
   const updatedUser = await user.save();
-  res.status(200).json({ message: `${updatedUser.userName} updated!` });
+  res.status(200).json({ message: `${updatedUser.name} updated!` });
 };

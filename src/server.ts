@@ -10,6 +10,7 @@ import userRoute from "./routes/user.route";
 import noteRoute from "./routes/note.route";
 import authRoute from "./routes/auth.route";
 import * as jwtUtils from "./helpers/utils/jwt.utils";
+import deserializeUser from "./helpers/middleware/deserializeUser";
 
 // console.log( generateRandom64BitString("for Token"));
 
@@ -26,6 +27,9 @@ app.disable("x-powered-by");
 
 dotenv.config();
 dbConnection();
+
+app.use(deserializeUser)
+
 
 app.use("/api/auth", authRoute);
 app.use("/api/note", noteRoute);

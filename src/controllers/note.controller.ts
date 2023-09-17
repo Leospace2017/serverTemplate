@@ -8,7 +8,7 @@ export const createNote = async (
   res: Response,
   next: NextFunction
 ) => {
-  validateInput(noteFormSchema, req, res);
+  validateInput(noteFormSchema, req.body, res);
   try {
     const { noteContent } = req.body;
 
@@ -29,11 +29,12 @@ export const getNotes = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { role }: any = req;
+
+  const  {role} = res.locals;
   console.log(role);
 
   try {
-    if (role === "admin" && role) {
+    if (role === "admin") {
       const notes = await Note.find();
 
       if (!notes) return res.json({ message: "notes not found" });

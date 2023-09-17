@@ -3,14 +3,14 @@ import z from "zod";
 export const registerFormSchema = z.object({
   body: z
     .object({
-      fullName: z
+      name: z
         .string()
         .min(2,{message: "minimum 2 Characters"})
         .max(15,{message:"maximun 15 Characters"})
         .trim()
         .toLowerCase()
         .refine((value) => {
-          if (!value) throw { message: "fullname required" };
+          if (!value) throw { message: "name required" };
           return true;
         }),
       email: z
@@ -41,16 +41,16 @@ export const registerFormSchema = z.object({
   });
 
 
-  
+
   export const updateFormSchema = z.object({
-    fullName: z
+    name: z
     .string()
     .min(2,{message: "minimum 2 Characters"})
     .max(15,{message:"maximun 15 Characters"})
     .trim()
     .toLowerCase()
     .refine((value) => {
-      if (!value) throw { message: "fullname required" };
+      if (!value) throw { message: "name required" };
       return true;
     }),
   email: z
@@ -72,29 +72,13 @@ export const registerFormSchema = z.object({
     }),
   }) 
 
-export const loginFormSchema = updateFormSchema.omit({fullName:true})
-// z.object({
+export const loginFormSchema = updateFormSchema.omit({name:true})
 
-//         email: z
-//           .string()
-//           .email()
-//           .trim()
-//           .toLowerCase()
-//           .refine((value) => {
-//             if (!value) throw { message: "email required" };
-//             return true;
-//           }),
-//         password: z
-//           .string()
-//           .trim()
-//           .min(8)
-//           .refine((value) => {
-//             if (!value) throw { message: "password required" };
-//             return true;
-//           }),
 
-      
+type User = z.infer<typeof updateFormSchema> 
 
-//   });
-  
+export type UserSchema = {
+    _id?: string,
+    role?: "member" | "admin" | undefined ;
+} & User 
 

@@ -22,18 +22,18 @@ export function signJwt(
   keyName: string | Buffer,
   {...options}: jwt.SignOptions | undefined
 ) {
-  const signingKey = keyName;
-  return jwt.sign(object, signingKey, {
+
+  return jwt.sign(object, keyName, {
     ...options,
     algorithm: "HS256",
   });
 }
 
 export function verifyJwt(token:string, keyName:string): VerifyJwtResult {
-  const publicKey = keyName;
+
 
   try {
-    const decoded = jwt.verify(token, publicKey) as JwtPayload;
+    const decoded = jwt.verify(token, keyName) as JwtPayload;
     return {
       valid: true,
       expired: false,
