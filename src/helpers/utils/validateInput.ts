@@ -4,7 +4,7 @@ import z, { ZodSchema } from "zod";
 
 export const validateInput = (zodSchema :ZodSchema, req: Request, res:Response) => {
     let error = {};
-      const result = zodSchema.safeParse(req);
+      const result = zodSchema.safeParse(req?.body);
   
       if (!result.success) {
         result.error.issues.forEach(
@@ -14,8 +14,8 @@ export const validateInput = (zodSchema :ZodSchema, req: Request, res:Response) 
           Object.keys(error).length > 0
             ? { errors: error }
             : { success: true };
-  
-            return res.status(409).json({ message: message });
+            console.log({ message: message })
+            return res.status(409);
       }
 
       return true

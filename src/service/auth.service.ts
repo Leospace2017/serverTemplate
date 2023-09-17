@@ -2,7 +2,7 @@ import { signJwt, verifyJwt } from "../helpers/utils/jwt.utils";
 import SessionModel from "../models/session.model";
 import { User } from "../models/user.model";
 import jwt from "jsonwebtoken"
-
+import "dotenv/config"
 export async function createSession(userId: string | undefined, userAgent: string | undefined) {
     const session = await SessionModel.create({ user: userId, userAgent });
   
@@ -31,6 +31,7 @@ export async function findSessions(query:Object) {
   
     const session = await SessionModel.findById(decoded.UserInfo.session);
   
+    console.log(session)
     if (!session || !session.valid) return false;
   
     const user = await User.findOne({ _id: session.user });

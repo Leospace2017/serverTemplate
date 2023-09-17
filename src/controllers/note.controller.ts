@@ -2,19 +2,25 @@ import { NextFunction, Request, Response } from "express";
 import { validateInput } from "../helpers/utils/validateInput";
 import { Note} from "../models/note.model";
 import noteFormSchema from "../models/schema/note.schema";
+import { verifyJwt } from "../helpers/utils/jwt.utils";
+import "dotenv/config"
+
 
 export const createNote = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  validateInput(noteFormSchema, req.body, res);
+  validateInput(noteFormSchema, req, res);
   try {
-    const { noteContent } = req.body;
+    const { title, noteContent, image } = req.body;
+    const {decoded} = verifyJwt(req.cookies.accessJwt, process.env.ACCESS_TOKEN_SECRET || "")
 
     const note = await Note.create({
+      title: title ,
       note: noteContent,
-      user: "6500519bd59f33ef794e3e1a",
+      image: image || "",
+      user: decoded?.UserInfo.id,
     });
 
     res.status(201).json({ message: `success to create ${note}` });
@@ -43,6 +49,8 @@ export const getNotes = async (
     } else {
       res.status(500).json({ message: "not admin" });
     }
+
+
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "server Error" });

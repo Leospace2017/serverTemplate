@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { verifyJwt } from "../utils/jwt.utils";
 import { reSignToken } from "../../service/auth.service";
-
+import "dotenv/config"
 
 
 const accessTokenP = process.env.ACCESS_TOKEN_SECRET || "";

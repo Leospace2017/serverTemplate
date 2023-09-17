@@ -14,8 +14,10 @@ import deserializeUser from "./helpers/middleware/deserializeUser";
 
 // console.log( generateRandom64BitString("for Token"));
 
+dotenv.config();
 const port = process.env.PORT || 3500;
 const app = express();
+dbConnection();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -25,8 +27,6 @@ app.use(cors(corsOptions));
 app.disable("x-powered-by");
 
 
-dotenv.config();
-dbConnection();
 
 app.use(deserializeUser)
 

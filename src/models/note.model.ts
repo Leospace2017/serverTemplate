@@ -4,7 +4,7 @@ import {customAlphabet } from "nanoid"
 const nanoid = customAlphabet("abcdefghijklmnopqrstuvwxyz0123456789", 10)
 
 const noteSchema = new mongoose.Schema({
-    noteId: {type: String, required: true, unique: true, default: ()=> `note_${nanoid()}`},
+    noteId: {type: String, unique: true, default: ()=> `note_${nanoid()}`},
     title: {type: String, required: true},
     note: { type: String, required: true},
     image: {type: String},
