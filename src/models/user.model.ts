@@ -1,23 +1,9 @@
 import mongoose from "mongoose";
-import z from "zod";
-
-const registerFormSchema = z.object({
-  fullName: z.string().min(2).max(15, { message: "fullname required" }),
-  email: z.string().email({ message: "email required" }),
-  password: z
-    .string({ message: "message required" })
-    .min(8, { message: "password has a minlength of 8" }),
-});
-
-const loginFormSchema = z.object({
-  email: z.string().email({message: "email required"}),
-  password: z.string().min(8, {message: "password has a minlength of 8"})
-})
 
 
 const userSchema = new mongoose.Schema(
   {
-    userName: {
+    name: {
       type: String,
     },
     email: {
@@ -28,8 +14,7 @@ const userSchema = new mongoose.Schema(
     role:{
       type: String,
       enum: {
-        values: ["guest", "admin"],
-        default: "guest"
+        values: ["member", "admin"]
       },
     },
     password: {
@@ -50,6 +35,10 @@ userSchema.virtual("notes", {
   foreignField: "user", // related opposite key
 });
 
+
 const User = mongoose.model("User", userSchema, "UserModel");
 
-export { User, registerFormSchema, loginFormSchema };
+
+
+
+export { User };
