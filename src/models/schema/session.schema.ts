@@ -1,30 +1,41 @@
 import { JwtPayload } from "jsonwebtoken";
 import z from "zod";
-
-export const createSessionSchema = z.object({
-    body: z.object({
-      email: z.string({
-        required_error: "Email is required",
-      }),
-      password: z.string({
-        required_error: "Password is required",
-      }),
-    }),
-  });
-  
-
-export const cookieSchema = z.object({
-    name: z.string(),
-    email: z.string().email(),
-    role: z.enum([ "member" ,"admin"]).optional(),
-    password: z.string(),
-  });
-  
-export type cookieSchemaType = z.infer<typeof cookieSchema> | null;
+import mongoose, {Document, Model, Types} from "mongoose";
 
 
-export type VerifyJwtResult = {
+export const SessionSchema = z.object({
+  UserInfo: z.object({
+    id: z.string(),
+    email: z.string({
+      required_error: "Email is required",
+    }).email(),
+    role: z.enum(["member", "admin"]).optional(),
+    session: z.string()
+  })
+});
+
+
+
+export type cookieSchemaType = z.infer<typeof SessionSchema> | null;
+
+
+
+export type verifyJwtResult = {
   valid: boolean;
   expired: boolean;
-  decoded: JwtPayload | null;
+  decoded:  cookieSchemaType | JwtPayload | null | undefined ;
+} 
+
+
+export type Session = {
+  _id: Types.ObjectId,
+  user: mongoose.Types.ObjectId | string;
+  valid: boolean;
+  userAgent?: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
+
+// export interface SessionDocument extends Session, Document {}
+
+// export interface SessionModel extends Model<SessionDocument> {}

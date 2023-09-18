@@ -75,10 +75,11 @@ export const registerFormSchema = z.object({
 export const loginFormSchema = updateFormSchema.omit({name:true})
 
 
-type User = z.infer<typeof updateFormSchema> 
+export type User = z.infer<typeof updateFormSchema> 
 
 export type UserSchema = {
     _id?: string,
     role?: "member" | "admin" | undefined ;
+    notes?: any;
 } & User 
 

@@ -1,8 +1,15 @@
 import { User } from "../models/user.model";
 import { validateInput } from "../helpers/utils/validateInput";
 import { NextFunction, Request, Response } from "express";
-import { registerFormSchema, updateFormSchema } from "../models/schema/user.schema";
+import {
+  UserSchema,
+  registerFormSchema,
+  updateFormSchema,
+} from "../models/schema/user.schema";
 import * as UserService from "../service/user.service";
+import { createSession } from "../service/auth.service";
+import { signJwt } from "../helpers/utils/jwt.utils";
+import "dotenv/config";
 export const createUser = async (
   req: Request,
   res: Response,
@@ -10,7 +17,12 @@ export const createUser = async (
 ) => {
   try {
     validateInput(registerFormSchema, req, res);
-    await UserService.dbCreateUser(req, res)
+    const user: UserSchema | any = await UserService.dbCreateUser(req, res);
+
+     await createSession(user?._id, req.get("user-agent" || ""));
+
+;
+res.json({message: "user created"}).redirect("./login");
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Server Error" });
@@ -34,7 +46,7 @@ export const findAllUsers = async (
 export const findOneUser = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
-    await UserService.dbFindOneUser(res,id, "notes")
+    await UserService.dbFindOneUser(res, id, "notes");
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "server error" });
@@ -47,7 +59,7 @@ export const updateUserById = async (req: Request, res: Response) => {
   validateInput(updateFormSchema, req.body, res);
 
   try {
-    await UserService.dbUpdateUser(req,res,id)
+    await UserService.dbUpdateUser(req, res, id);
   } catch (error: any) {
     console.log(error);
     res.status(500).json({ message: error.message });

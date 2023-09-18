@@ -37,8 +37,8 @@ app.use("/api/user", userRoute);
 
 mongoose.connection.once("open", () => {
   console.log("DB connected");
+  app.listen(port, () => console.log(`server started at port ${port}`));
 });
-app.listen(port, () => console.log(`server started at port ${port}`));
 
 mongoose.connection.on("error", (err) => {
   console.log(err, `${err.no}:${err.code}\t${err.syscall}\t${err.hostname}`);

@@ -2,6 +2,8 @@ import { Request, Response, NextFunction } from "express";
 import { verifyJwt } from "../utils/jwt.utils";
 import { reSignToken } from "../../service/auth.service";
 import "dotenv/config"
+import { sessionRefreshHandler } from "../../controllers/auth.controller";
+import SessionModel from "../../models/session.model";
 
 
 const accessTokenP = process.env.ACCESS_TOKEN_SECRET || "";
@@ -11,32 +13,45 @@ const deserializeUser = async (
   res: Response,
   next: NextFunction
 ) => {
-  const accessToken = req.cookies.accessJwt;
+  const {accessJwt} = req.cookies;
+  const {refreshJwt} = req.cookies;
 
-  const refreshToken = req.cookies.refreshJwt;
+  // const {decoded :decode} = verifyJwt(accessJwt,accessTokenP)
+  // console.log("refreshcode", decode)
+//   const session:any = await SessionModel.findById("650764f3a98d4221fbcebe77")
+// console.log(session.user)
 
-  if (!accessToken) {
+  if (!accessJwt) {
     return next();
   }
+  
+  const { decoded, expired } = verifyJwt(accessJwt, accessTokenP);
+  console.log("deser",decoded)
+  if (!expired) {
+    res.locals.role = decoded?.UserInfo.role;
+    // await sessionRefreshHandler(req, res, next)
+    return next()
 
-  const { decoded, expired } = verifyJwt(accessToken, accessTokenP);
-
-  if (decoded) {
-    res.locals.role = decoded.UserInfo.role;
-    return next();
   }
-
-  if (expired && refreshToken) {
-    const newAccessToken = await reSignToken( refreshToken, refreshTokenP);
+  
+  if (expired && refreshJwt) {
+    const newAccessToken = await reSignToken( refreshJwt, refreshTokenP);
+    console.log("new Accestoken",newAccessToken)
 
     if (newAccessToken) {
-      res.cookie("accessJwt", newAccessToken);
+      res.cookie("accessJwt", newAccessToken, {
+        httpOnly: false,
+        secure: false,
+        sameSite: "none",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
     }
 
-    const {decoded}  = verifyJwt(newAccessToken as string, accessToken);
+    const {decoded}  = verifyJwt(newAccessToken as string, accessJwt);
 
     res.locals.role = decoded?.UserInfo.role;
-    return next();
+    // await sessionRefreshHandler(req,res, next)
+    return next()
   }
 
   return next();

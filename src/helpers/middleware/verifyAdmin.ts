@@ -1,14 +1,23 @@
 import { NextFunction, Request, Response } from "express";
-
+import "dotenv/config"
+import { verifyJwt } from "../utils/jwt.utils";
 
 
 const verifyAdmin = (req: Request, res: Response, next: NextFunction) => {
 
   const {role} = res.locals;
+  // jwt tests
+  // const {accessJwt}= req.cookies;
+  // console.log(accessJwt)
+  //     const {decoded } = verifyJwt(accessJwt,process.env.ACCESS_TOKEN_SECRET || "")
+  //     console.log("refreshcode", decoded)
 
-  if (!role) {
+  if (role !== "admin") {
+
+    res.locals.role = ""
     return res.sendStatus(403);
   }
+
 
   return next();
 };

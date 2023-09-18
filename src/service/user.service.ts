@@ -33,7 +33,9 @@ export const dbCreateUser = async (req: Request, res: Response) => {
   const user = await User.create({ ...req.body, password: hashedPassword });
 
   if (user) {
-    res.status(201).json({ message: `${user} created` });
+    console.log({ message: `${user} created` });
+    res.status(201)
+    return user;
   } else {
     throw new Error("failed created new User");
   }

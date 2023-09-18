@@ -25,32 +25,34 @@ export async function findSessions(query:Object) {
   
 
   export async function reSignToken(refreshToken :string, keyName: string) {
-    const { decoded } = verifyJwt(refreshToken, keyName);
-  
+    const  {decoded}   = verifyJwt(refreshToken, keyName);
+    console.log("resigntokem",decoded)
     if (!decoded || !decoded.UserInfo.session) return false;
   
     const session = await SessionModel.findById(decoded.UserInfo.session);
   
-    console.log(session)
+    console.log("resigndata",session)
     if (!session || !session.valid) return false;
   
     const user = await User.findOne({ _id: session.user });
   
+    console.log("resignuser",user)
     if (!user) return false;
   
 
-  const accessToken = jwt.sign(
+  const newAccessToken = jwt.sign(
     {
       UserInfo: {
+        id: user?._id,
         email: user?.email,
         role: user?.role,
         session: session._id
       },
     },
     process.env.ACCESS_TOKEN_SECRET || "",
-    { expiresIn: "30000" }
+    { expiresIn: 60 }
   );
   
-    return accessToken;
+    return newAccessToken;
   }
   

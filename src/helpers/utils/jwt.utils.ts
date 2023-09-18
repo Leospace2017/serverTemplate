@@ -1,6 +1,6 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
 import "dotenv/config";
-import { VerifyJwtResult } from "../../models/schema/session.schema";
+import { verifyJwtResult } from "../../models/schema/session.schema";
 
 export function generateRandom64BitString(input: string) {
   // Definieren Sie alle möglichen Zeichen im Hexadezimalformat (0-9, a-f)
@@ -20,24 +20,25 @@ export function generateRandom64BitString(input: string) {
 export function signJwt(
   object: Object,
   keyName: string | Buffer,
-  {...options}: jwt.SignOptions | undefined
+  options: jwt.SignOptions | undefined
 ) {
-
-  return jwt.sign(object, keyName, {
-    ...options,
-    algorithm: "HS256",
-  });
+  return jwt.sign(object, keyName, options);
 }
 
-export function verifyJwt(token:string, keyName:string): VerifyJwtResult {
-
-
+export function verifyJwt(token: string, keyName: string): verifyJwtResult {
   try {
     const decoded = jwt.verify(token, keyName) as JwtPayload;
+
+    if (decoded)
+      return {
+        valid: true,
+        expired: false,
+        decoded,
+      };
     return {
-      valid: true,
-      expired: false,
-      decoded,
+      valid: false,
+      expired: true,
+      decoded: null,
     };
   } catch (e: any) {
     console.error(e);
