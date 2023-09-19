@@ -26,7 +26,6 @@ const deserializeUser = async (
   }
   
   const { decoded, expired } = verifyJwt(accessJwt, accessTokenP);
-  console.log("deser",decoded)
   if (!expired) {
     res.locals.role = decoded?.UserInfo.role;
     // await sessionRefreshHandler(req, res, next)
@@ -36,7 +35,6 @@ const deserializeUser = async (
   
   if (expired && refreshJwt) {
     const newAccessToken = await reSignToken( refreshJwt, refreshTokenP);
-    console.log("new Accestoken",newAccessToken)
 
     if (newAccessToken) {
       res.cookie("accessJwt", newAccessToken, {

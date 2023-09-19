@@ -19,4 +19,12 @@ declare global {
 const email = req.email;
 const role = req.role;
 
+// helmet.d.ts
+declare module 'helmet' {
+  import { RequestHandler } from 'express';
+
+  function expectCt(options?: { maxAge?: number }): RequestHandler;
+
+  export = expectCt;
+}
 

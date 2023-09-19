@@ -26,17 +26,14 @@ export async function findSessions(query:Object) {
 
   export async function reSignToken(refreshToken :string, keyName: string) {
     const  {decoded}   = verifyJwt(refreshToken, keyName);
-    console.log("resigntokem",decoded)
     if (!decoded || !decoded.UserInfo.session) return false;
   
     const session = await SessionModel.findById(decoded.UserInfo.session);
   
-    console.log("resigndata",session)
     if (!session || !session.valid) return false;
   
     const user = await User.findOne({ _id: session.user });
   
-    console.log("resignuser",user)
     if (!user) return false;
   
 
@@ -52,6 +49,7 @@ export async function findSessions(query:Object) {
     process.env.ACCESS_TOKEN_SECRET || "",
     { expiresIn: 60 }
   );
+  if(!newAccessToken) return false
   
     return newAccessToken;
   }
