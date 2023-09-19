@@ -9,8 +9,8 @@ import corsOptions from "./config/allowesOrigins";
 import userRoute from "./routes/user.route";
 import noteRoute from "./routes/note.route";
 import authRoute from "./routes/auth.route";
-import * as jwtUtils from "./helpers/utils/jwt.utils";
 import deserializeUser from "./helpers/middleware/deserializeUser";
+import fileRoute from "./routes/file.route"
 
 // console.log( generateRandom64BitString("for Token"));
 
@@ -26,7 +26,8 @@ app.use(cookieParser());
 app.use(cors(corsOptions));
 app.disable("x-powered-by");
 
-
+app.use(express.static("public"))
+app.use("/dbUpload", fileRoute)
 
 app.use(deserializeUser)
 

@@ -1,14 +1,14 @@
 import { CorsOptions } from "cors";
 import "dotenv/config";
 
-const localPort = process.env.PORT || 3500;
-const dbPort = `${process.env.DB_URI}${process.env.DB_NAME}`;
+const localPort = `http://localhost:${process.env.PORT || 3500}`;
+const dbPort = ` "https://example.com"  //ProductionUrl`;
 
 const allowedOrigins = [localPort, dbPort];
 
 export const corsOptions: CorsOptions = {
   origin: (origin, callback) => {
-    if (allowedOrigins.includes(origin as string | number) || !origin) {
+    if (allowedOrigins.includes(origin as string) || !origin) {
       callback(null, true);
     } else {
       callback(new Error("Not allowed by cors"));

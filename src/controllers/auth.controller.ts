@@ -18,12 +18,12 @@ export const login = async (req: Request, res: Response) => {
   await compareDBPassword(email, password);
   const updatedUser = await User.findOneAndUpdate(
     { email: email },
-    { $set: { role: "admin" } }
+    { $set: { role: "admin" , valid: true} }
   );
 
   res.locals.role = updatedUser?.role;
 
-  //mit gefundenen User finde dem erstellten Session und speichern seuben _id auf client
+  //mit gefundenen User finde dem erstellten Session und speichern dem _id auf client
   const session: Session | any = await SessionModel.findOne({
     user: updatedUser?._id,
   });
