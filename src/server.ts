@@ -22,7 +22,7 @@ dbConnection();
 
 app.use(helmet());
 
-// Schützen Sie Ihre Anwendung vor bekannten Sicherheitslücken
+
 app.use(helmet.contentSecurityPolicy());  //Aktiviert eine Content-Security-Policy, um XSS-Angriffe zu verhindern. (die Verwendung von nicht vertrauenswürdigem JavaScript und anderen Ressourcen auf Ihren Seiten einschränkt)
 app.use(helmet.frameguard({ action: "deny" })); //Verhindert Klickjacking-Angriffe, indem es die Verwendung von iframes und Frames auf Ihren Seiten steuert
 app.use(helmet.hsts()); //Aktiviert HTTP Strict Transport Security (HSTS) für sichere Verbindungen. (Man-in-the-Middle-Angriffen)
@@ -39,7 +39,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(logger);
 app.use(cookieParser());
-// app.use(cors(corsOptions));
+app.use(cors(corsOptions));
 app.disable("x-powered-by");
 
 app.use(express.static("public"))
@@ -54,14 +54,14 @@ app.use("/dbUpload", fileRoute)
 
 mongoose.connection.once("open", () => {
   console.log("DB connected");
-  app.listen(port, () => console.log(`server started at port ${port}`));
+  app.listen(port, () => console.log(`server started at port http://localhost:${port}`));
 });
 
 mongoose.connection.on("error", (err) => {
   console.log(err, `${err.no}:${err.code}\t${err.syscall}\t${err.hostname}`);
 });
 
-// Deploy
+// // Deploy
 // import path from "path";
 // import { fileURLToPath } from "url";
 // const __filename = fileURLToPath(import.meta.url);

@@ -25,7 +25,8 @@ export function signJwt(
   return jwt.sign(object, keyName, options);
 }
 
-export function verifyJwt(token: string, keyName: string): verifyJwtResult {
+export function verifyJwt(token: string , keyName: string): verifyJwtResult {
+  
   try {
     const decoded = jwt.verify(token, keyName) as JwtPayload;
 
@@ -41,7 +42,6 @@ export function verifyJwt(token: string, keyName: string): verifyJwtResult {
       decoded: null,
     };
   } catch (e: any) {
-    console.error(e);
     return {
       valid: false,
       expired: e.message === "jwt expired",

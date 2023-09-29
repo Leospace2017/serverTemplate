@@ -14,8 +14,9 @@ const verifyAdmin = (req: Request, res: Response, next: NextFunction) => {
 
   if (role !== "admin") {
 
-    res.locals.role = ""
-    return res.sendStatus(403);
+    res.locals.role = "";
+    console.log("Checking for cookie and refreshing using window.location.reload() in frontend")
+    return next();
   }
 
 
